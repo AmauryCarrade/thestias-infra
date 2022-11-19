@@ -1,0 +1,87 @@
+- name: Create Grav root.
+  ansible.builtin.file:
+    path: "{{ grav_root }}"
+    state: directory
+    mode: '0755'
+
+- name: Check if Grav is already installed.
+  stat:
+    path: "{{ grav_root }}/composer.json"
+  register: grav_composer_json
+
+- name: Install Grav.
+  community.general.composer:
+    command: create-project
+    arguments: getgrav/grav {{ grav_root }}
+    working_dir: "{{ grav_root }}"
+    prefer_dist: true
+  when: not grav_composer_json.stat.exists
+
+- name: Backups user directory if Grav was juste installed, to keep default plugins/themes.
+  ansible.builtin.copy:
+    src: "{{ grav_root }}/user"
+    dest: "{{ grav_user_backup }}"
+    remote_src: yes
+    mode: preserve
+  when: not grav_composer_json.stat.exists
+
+- name: Deletes user directory if Grav was just installed, so we can clone our one.
+  ansible.builtin.file:
+    path: "{{ grav_root }}/user"
+    state: absent
+  when: not grav_composer_json.stat.exists
+
+- name: Clone or update user repository.
+  ansible.builtin.git:
+    repo: "{{ grav_user_repo }}"
+    dest: "{{ grav_root }}/user"
+    version: "{{ grav_user_repo_branch }}"
+
+- name: Write back backup’d directories.
+  ansible.builtin.copy:
+    src: "{{ grav_user_backup }}/user/{{ item }}"
+    dest: "{{ grav_root }}/user/"
+    remote_src: yes
+    mode: preserve
+  when: not grav_composer_json.stat.exists
+  loop:
+    - themes
+    - plugins
+    - accounts
+    - data
+
+- name: Remove backup directory.
+  ansible.builtin.file:
+    path: "{{ grav_user_backup }}"
+    state: absent
+
+- name: Clone or update theme repository ({{ grav_theme_name }}).
+  ansible.builtin.git:
+    repo: "{{ grav_theme_repo }}"
+    dest: "{{ grav_root }}/user/themes/{{ grav_theme_name }}"
+    version: "{{ grav_theme_repo_branch }}"
+    depth: 1
+    force: yes
+    recursive: yes
+
+- name: Install Grav plugins.
+  ansible.builtin.command:
+    cmd: php bin/gpm install --no-interaction --no-ansi {{ item }}
+    chdir: "{{ grav_root }}"
+  loop: "{{ grav_plugins }}"
+
+- name: Install nginx config.
+  ansible.builtin.template:
+    src: templates/nginx.conf
+    dest: "{{ www_sites_config }}/{{ app_host }}.conf"
+  become_user: root
+  become: true
+  notify:
+    - Restart nginx
+
+- name: Register Grav scheduler.
+  ansible.builtin.cron:
+    name: "Grav scheduler for {{ app_host }}"
+    user: "{{ www_user }}"
+    job: "cd {{ grav_root }};/usr/bin/php bin/grav scheduler 1>> /dev/null 2>&1"
+    state: present

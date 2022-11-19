@@ -1,0 +1,13 @@
+- name: Thestias
+  hosts: thestias
+
+  roles:
+    - common
+    - nginx
+    - role: geerlingguy.composer
+      vars:
+        composer_keep_updated: true
+      become: true
+    - role: amaury.carrade.eu
+      become: true
+      become_user: "{{ www_user }}"

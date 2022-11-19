@@ -1,0 +1,41 @@
+# What host should be the Grav website accessible from?
+app_host: amaury.carrade.eu
+
+# Where the Grav website will be installed
+grav_root: "{{ www_root }}/carrade/amaury"
+
+# Where the original Grav user folder will be copied while cloning the user repo. This
+# folder will be deleted afterwards.
+grav_user_backup: "{{ grav_root }}/__ansible_default_user_backup"
+
+# The repository containing the user folder (or parts of it), typically synced with
+# the git-sync plugin.
+grav_user_repo: https://github.com/AmauryCarrade/amaury.carrade.eu.git
+grav_user_repo_branch: main
+
+# The repository containing the theme to use. The theme name will be the folder name
+# where the theme will be stored, it must match the internal name exactly.
+grav_theme_repo: https://github.com/AmauryCarrade/grav-theme-amaury-carrade.git
+grav_theme_repo_branch: main
+grav_theme_name: amaury-carrade
+
+# Grav plugins automatically installed. These must be valid GPM slugs. Existing plugins will not
+# be uninstalled (e.g. if installed through the Admin plugin or GPM directly), but it would be a
+# good idea to add them here for the future.
+grav_plugins:
+  # Core
+  - problems
+  - error
+  - flex-objects
+  - form
+  - email
+  - login
+  - admin
+
+  # Just for me
+  - random
+  - admin-addon-media-rename
+  - readingtime
+  - tntsearch
+  - git-sync
+  - page-toc
