@@ -39,3 +39,6 @@ grav_plugins:
   - tntsearch
   - git-sync
   - page-toc
+  - feed
+  - taxonomylist
+  - pagination
