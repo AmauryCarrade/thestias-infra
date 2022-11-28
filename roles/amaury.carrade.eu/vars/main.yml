@@ -42,3 +42,89 @@ grav_plugins:
   - feed
   - taxonomylist
   - pagination
+
+tools_base: https://outils.carrade.eu
+
+# Permanent redirects added to nginx configuration
+#  from: the path to be redirected. Regular expression (auto-prefixed with ^)
+#  to: the path or URL to redirect to.
+#  rewrite: if set, will use nginx rewriting instead of return 302. You then can use regular expressions in path/URLs.
+#           If falsy or unset, no rewrite. If set, should be the rewrite regex. Default unset.
+#  base: if true, will redirect all sub-paths too. Default false.
+#  permanent: if true, 301, else 302 (temporary redirect). Default true.
+app_redirections:
+  # Internal redirections
+  - from: /about
+    to: /meta
+  - from: /legal
+    to: /meta
+  - from: /apropos
+    to: /meta
+  - from: /a-propos
+    to: /meta
+
+  # Removed pages - Donation links in footer now.
+  - from: /don
+    to: /meta
+  - from: /donation
+    to: /meta
+  - from: /donner
+    to: /meta
+
+  # Alice's memoire
+  - from: /mémoire-alice(-thomas)?
+    to: /memoire-alice-thomas
+  - from: /m(e|é)moire-?alice(thomas)?
+    to: /memoire-alice-thomas
+  - from: /alice(-?thomas)?
+    to: /memoire-alice-thomas
+
+  # Companion websites
+  - from: /PR
+    to: https://free.carrade.eu
+  - from: /links
+    to: https://shaarli.amaury.carrade.eu/$1
+    rewrite: /links(?:/(.*))?
+    base: true
+  - from: /tea
+    to: https://my-tea.party/$1
+    rewrite: /tea(?:/(.*))?
+    base: true
+
+  # Tools, now on another domain
+  - from: /upload
+    to: "{{ tools_base }}/upload"
+  - from: /minecraft
+    to: "{{ tools_base }}/minecraft/$1"
+    rewrite: /minecraft(?:/(.*))?
+    base: true
+  - from: /mumble
+    to: "{{ tools_base }}/mumble/$1"
+    rewrite: /mumble(?:/(.*))?
+    base: true
+  - from: /tools
+    to: "{{ tools_base }}/tools/$1"
+    rewrite: /tools(?:/(.*))?
+    base: true
+  - from: /uuid
+    to: "{{ tools_base }}/minecraft/history"
+  - from: /ping
+    to: "{{ tools_base }}/minecraft/ping"
+  - from: /bukkit/permissions
+    to: "{{ tools_base }}/bukkit/permissions"
+  - from: /tools/generators/bukkit/permissions.html
+    to: "{{ tools_base }}/bukkit/permissions"
+  - from: /chat_highlighter
+    to: "{{ tools_base }}/chat_highlighter"
+  - from: /chat-highlighter
+    to: "{{ tools_base }}/chat_highlighter"
+  - from: /chat_highlighter/json
+    to: "{{ tools_base }}/chat_highlighter/json"
+  - from: /redirects
+    to: "{{ tools_base }}/redirects"
+  - from: /redirects/json
+    to: "{{ tools_base }}/redirects/json"
+  - from: /articles/mumble
+    to: "{{ tools_base }}/articles/mumble"
+  - from: /programmation/commencer
+    to: "{{ tools_base }}/programmation/commencer"
