@@ -92,6 +92,8 @@ app_redirections:
     base: true
 
   # Tools, now on another domain
+  - from: /tools
+    to: "{{ tools_base }}"
   - from: /upload
     to: "{{ tools_base }}/upload"
   - from: /minecraft
