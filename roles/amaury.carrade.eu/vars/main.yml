@@ -42,6 +42,7 @@ grav_plugins:
   - feed
   - taxonomylist
   - pagination
+  - sitemap
 
 tools_base: https://outils.carrade.eu
 
