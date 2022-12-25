@@ -97,6 +97,16 @@ app_redirections:
     to: "{{ tools_base }}"
   - from: /upload
     to: "{{ tools_base }}/upload"
+  - from: /stats
+    to: "{{ tools_base }}/stats"
+  - from: /projects
+    to: "{{ tools_base }}/projects"
+    permanent: false
+  - from: /projets
+    to: "{{ tools_base }}/projects"
+    permanent: false
+  - from: /projects/opera/qrcode
+    to: "{{ tools_base }}/projects/opera/qrcode"
   - from: /minecraft
     to: "{{ tools_base }}/minecraft/$1"
     rewrite: /minecraft(?:/(.*))?
@@ -129,5 +139,9 @@ app_redirections:
     to: "{{ tools_base }}/redirects/json"
   - from: /articles/mumble
     to: "{{ tools_base }}/articles/mumble"
+  - from: /articles/mumble.html
+    to: "{{ tools_base }}/articles/mumble"
   - from: /programmation/commencer
+    to: "{{ tools_base }}/programmation/commencer"
+  - from: /programmation/commencer.html
     to: "{{ tools_base }}/programmation/commencer"
